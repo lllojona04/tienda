@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DeporteX - Paseo 🚶</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      line-height: 1.6;
+      color: #333;
+      font-size: 100%;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #000;
+      padding: 1rem 2rem;
+      color: white;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .navbar .logo-text {
+      font-size: 1.8rem;
+      font-weight: bold;
+      text-decoration: none;
+      color: white;
+    }
+
+    .navbar .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #333;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      z-index: 1;
+      top: 100%;
+      left: 0;
+      border-radius: 0 0 5px 5px;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .dropdown-content a {
+      color: white;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #555;
+    }
+
+    .navbar .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.1rem;
+    }
+
+    .page-section {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-productos h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      color: #333;
+    }
+
+      .page-content {
+      padding: 3rem;
+      color: #333;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .page-content p {
+      font-size: 1.1rem;
+      color: #444;
+      max-width: 800px;
+      margin: 1.5rem auto;
+    }
+
+    .product-grid-sub {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .product-card {
+      border: 1px solid #ddd;
+      padding: 1rem;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      background-color: white;
+      text-align: center;
+    }
+
+    .product-card img {
+      width: 100%;
+      max-width: 200px;
+      height: auto;
+      margin-bottom: 1rem;
+    }
+
+    .btn-detail {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      background-color: #007bff;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .btn-detail:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">
+      <a href="index.html" aria-label="Volver a Inicio">
+        <span class="logo-text highlight-on-hover">DeporteX 🏷️</span>
+      </a>
+    </div>
+    <nav aria-label="Navegación Principal">
+      <ul class="nav-links">
+        <li><a href="index.html" class="highlight-on-hover">Inicio 🏠</a></li>
+        <li class="dropdown">
+          <a href="productos.html" class="highlight-on-hover">Productos 🛍️</a>
+          <ul class="dropdown-content">
+            <li><a href="productos-futbol.html" class="highlight-on-hover">Fútbol ⚽</a></li>
+            <li><a href="productos-cole.html" class="highlight-on-hover">Cole 🎒</a></li>
+            <li><a href="productos-paseo.html" class="highlight-on-hover">Paseo 🚶</a></li>
+          </ul>
+        </li>
+        <li><a href="contacto.html" class="highlight-on-hover">Contacto ✉️</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-section section-productos">
+      <h2 class="highlight-on-hover">Ropa y Accesorios de Paseo 🚶</h2>
+
+      <div class="page-content">
+        <p>
+          Disfruta de tu tiempo libre con estilo y comodidad. La sección <strong>Paseo</strong> ofrece prendas y accesorios perfectos para tus salidas urbanas o de relax. Diseños deportivos con materiales de calidad que te acompañan durante todo el día.
+        </p>
+
+        <div class="product-grid-sub">
+          <!-- Producto 1 -->
+          <article class="product-card highlight-on-hover">
+            <h3>Zapatillas Casual 👟</h3>
+            <img src="./img/playeras.png" alt="LAS ESPÁIS">
+            <p>Diseño moderno y suela cómoda para caminar todo el día. Precio: €112,00</p>
+            <a href="https://tienda.realracingclub.es/products/las-espais-del-racing?_pos=2&_sid=a728626be&_ss=r" class="btn-detail">Ver Detalle</a>
+          </article>
+
+          <!-- Producto 2 -->
+          <article class="product-card highlight-on-hover">
+            <h3>Sudadera Deportiva 🧥</h3>
+            <img src="./img/sudader.png" alt="Sudadera con capucha">
+            <p>Con capucha, bolsillos frontales y tejido suave. Precio: €49.95</p>
+            <a href="https://tienda.realracingclub.es/products/chubasquero-25-27?_pos=16&_sid=6360fbec2&_ss=r" class="btn-detail">Ver Detalle</a>
+          </article>
+
+          <!-- Producto 3 -->
+          <article class="product-card highlight-on-hover">
+            <h3>Gorra Oficial 🧢</h3>
+            <img src="./img/gorra.png" alt="Gorra estilo deportivo">
+            <p>Estilo clásico con ajuste trasero. Ideal para el sol. Precio: €19.95</p>
+            <a href="https://tienda.realracingclub.es/products/gorra-blanca-soricastel?_pos=1&_sid=b049d7656&_ss=r" class="btn-detail">Ver Detalle</a>
+          </article>
+        </div>
+
+      </div>
+    </section>
+  </main>
+</body>
+</html>

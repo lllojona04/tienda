@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DeporteX - Fútbol ⚽</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      line-height: 1.6;
+      color: #333;
+      font-size: 100%;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #000;
+      padding: 1rem 2rem;
+      color: white;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .navbar .logo-text {
+      font-size: 1.8rem;
+      font-weight: bold;
+      text-decoration: none;
+      color: white;
+    }
+
+    .navbar .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #333;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      z-index: 1;
+      top: 100%;
+      left: 0;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      border-radius: 0 0 5px 5px;
+    }
+
+    .dropdown-content li {
+      list-style: none; /* ✅ Esto elimina los puntos */
+      margin: 0;
+      padding: 0;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .dropdown-content a {
+      color: white;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      text-align: left;
+      font-size: 1rem !important;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #555;
+    }
+
+    .navbar .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.1rem;
+    }
+
+    .page-section {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-productos h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      color: #333;
+    }
+
+    .page-content {
+      padding: 3rem;
+      color: #333;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .page-content p {
+      font-size: 1.1rem;
+      color: #444;
+      max-width: 800px;
+      margin: 1.5rem auto;
+    }
+
+    .product-grid-sub {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .product-card {
+      border: 1px solid #ddd;
+      padding: 1rem;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      background-color: white;
+      text-align: center;
+    }
+
+    .product-card img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+    }
+
+    .btn-detail {
+      display: inline-block;
+      margin-top: 0.8rem;
+      padding: 0.5rem 1rem;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-detail:hover {
+      background-color: #444;
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">
+      <a href="index.html" aria-label="Volver a Inicio">
+        <span class="logo-text highlight-on-hover">DeporteX 🏷️</span>
+      </a>
+    </div>
+    <nav aria-label="Navegación Principal">
+      <ul class="nav-links">
+        <li><a href="index.html" class="highlight-on-hover">Inicio 🏠</a></li>
+        <li class="dropdown">
+          <a href="productos.html" class="highlight-on-hover">Productos 🛍️</a>
+          <ul class="dropdown-content">
+            <li><a href="productos-futbol.html" class="highlight-on-hover">Fútbol ⚽</a></li>
+            <li><a href="productos-cole.html" class="highlight-on-hover">Cole 🎒</a></li>
+            <li><a href="productos-paseo.html" class="highlight-on-hover">Paseo 🚶</a></li>
+          </ul>
+        </li>
+        <li><a href="contacto.html" class="highlight-on-hover">Contacto ✉️</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-section section-productos">
+      <h2 class="highlight-on-hover">Equipaciones de Fútbol ⚽</h2>
+      
+      <div class="page-content">
+        <p>
+          ¡Vive la pasión! En esta sección encontrarás una <strong>amplia selección de equipaciones oficiales</strong> para usar tanto en casa como fuera. Además, ofrecemos balones, espinilleras y todo el equipo técnico que un futbolista necesita para el campo.
+        </p>
+        <div class="product-grid-sub">
+          <!-- Primera Equipación -->
+          <article class="product-card highlight-on-hover">
+            <h3>Primera Equipación 👕</h3>
+            <img src="./img/equipacion1.png" alt="Primera equipación 2025">
+            <p>Equipación oficial para usar tanto en casa como fuera. Tejido técnico. Precio: €72.95</p>
+            <a href="https://tienda.realracingclub.es/collections/equipaciones/products/camiseta-1%C2%AA-equipacion-25-26" class="btn-detail">Ver Detalle</a>
+          </article>
+
+          <!-- Segunda Equipación -->
+          <article class="product-card highlight-on-hover">
+            <h3>Segunda Equipación 🧢</h3>
+            <img src="./img/equipacion2.png" alt="Segunda equipación 2025">
+            <p>Diseño exclusivo para uso versátil, tanto en casa como fuera. Precio: €89.99</p>
+            <a href="https://tienda.realracingclub.es/collections/equipaciones/products/camiseta-2%C2%AA-equipacion-25-26" class="btn-detail">Ver Detalle</a>
+          </article>
+
+          <!-- Tercera Equipación -->
+          <article class="product-card highlight-on-hover">
+            <h3>Tercera Equipación 🎯</h3>
+            <img src="./img/equipacion3.png" alt="Tercera equipación 2025">
+            <p>Versión alternativa de edición limitada, para cualquier partido. Precio: €99.99</p>
+            <a href="https://tienda.realracingclub.es/collections/equipaciones/products/camiseta-3%C2%AA-equipacion-25-26" class="btn-detail">Ver Detalle</a>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
