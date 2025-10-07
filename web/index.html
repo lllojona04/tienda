@@ -111,16 +111,16 @@
       color: #333;
       font-weight: bold;
       border-radius: 8px;
-      border: 2px solid #4CAF50; /* Color de borde */
+      border: 2px solid #007bff; /* Color de borde actualizado para el nuevo propósito */
       display: inline-block;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       transition: all 0.3s ease;
     }
 
     #ubicacion-usuario:hover {
-      background-color: #4CAF50;
+      background-color: #007bff;
       color: white;
-      border-color: #45a049;
+      border-color: #0056b3;
     }
   </style>
 </head>
@@ -163,7 +163,7 @@
 
   <footer>
     <p class="highlight-on-hover">&copy; 2025 DeporteX</p>
-    <p id="ubicacion-usuario"></p> <!-- Ubicación del usuario visualmente destacada -->
+    <p id="ubicacion-usuario">Cargando ubicación precisa...</p> 
   </footer>
 
   <script>
@@ -250,32 +250,64 @@
       }
     }
 
-    // --- FUNCIÓN AÑADIDA PARA GEOLOCALIZACIÓN ---
-    function obtenerUbicacionIP() {
-      const url = 'https://ipapi.co/json/';
+    // --- FUNCIÓN AÑADIDA PARA GEOLOCALIZACIÓN ESPECÍFICA (Requiere permiso del usuario) ---
+    function mostrarError(error) {
       const ubicacionElemento = document.getElementById('ubicacion-usuario');
-      
-      fetch(url)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Error en la API de geolocalización');
-          }
-          return response.json();
-        })
-        .then(data => {
-          if (data.country_name && data.city) {
-            ubicacionElemento.textContent = `Viendo desde: ${data.city}, ${data.country_name} 🌍`;
-          } else {
-            ubicacionElemento.textContent = 'Ubicación no disponible.';
-          }
-        })
-        .catch(error => {
-          console.error('Error al obtener la ubicación:', error);
-          ubicacionElemento.textContent = 'Error al cargar la ubicación.';
-        });
+      let mensaje;
+
+      switch(error.code) {
+        case error.PERMISSION_DENIED:
+          mensaje = "Ubicación denegada. Por favor, habilite el permiso en su navegador.";
+          break;
+        case error.POSITION_UNAVAILABLE:
+          mensaje = "Información de ubicación no disponible.";
+          break;
+        case error.TIMEOUT:
+          mensaje = "Tiempo de espera agotado para obtener la ubicación.";
+          break;
+        case error.UNKNOWN_ERROR:
+          mensaje = "Error desconocido al obtener la ubicación.";
+          break;
+        default:
+          mensaje = "Error al intentar obtener la ubicación precisa.";
+      }
+      ubicacionElemento.textContent = `📍 Error: ${mensaje}`;
     }
 
-    document.addEventListener('DOMContentLoaded', obtenerUbicacionIP);
+    function mostrarUbicacion(position) {
+      const ubicacionElemento = document.getElementById('ubicacion-usuario');
+      const lat = position.coords.latitude.toFixed(4); // 4 decimales
+      const lon = position.coords.longitude.toFixed(4); // 4 decimales
+      const precision = position.coords.accuracy;
+
+      ubicacionElemento.innerHTML = `
+        <span style="color:#007bff;">📍</span> 
+        Ubicación precisa: Latitud ${lat}, Longitud ${lon} 
+        <br> (Precisión: ${precision} metros)
+      `;
+    }
+
+    function obtenerUbicacionPrecisa() {
+      const ubicacionElemento = document.getElementById('ubicacion-usuario');
+
+      if (navigator.geolocation) {
+        ubicacionElemento.textContent = "Cargando ubicación precisa... 🛰️";
+        
+        // Opciones: alta precisión y tiempo de espera
+        const opciones = {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
+        };
+
+        navigator.geolocation.getCurrentPosition(mostrarUbicacion, mostrarError, opciones);
+      } else {
+        ubicacionElemento.textContent = "Geolocalización no soportada por este navegador.";
+      }
+    }
+    // ------------------------------------------------------------------------------------
+
+    document.addEventListener('DOMContentLoaded', obtenerUbicacionPrecisa);
   </script>
 
 </body>
