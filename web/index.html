@@ -101,14 +101,33 @@
       transition: background-color 0.3s;
       color: #000 !important;
     }
+
+    /* ---------- Estilo para la ubicación del usuario ---------- */
+    #ubicacion-usuario {
+      font-size: 16px;
+      margin-top: 5px;
+      padding: 10px;
+      background-color: #f1f1f1;
+      color: #333;
+      font-weight: bold;
+      border-radius: 8px;
+      border: 2px solid #4CAF50; /* Color de borde */
+      display: inline-block;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    #ubicacion-usuario:hover {
+      background-color: #4CAF50;
+      color: white;
+      border-color: #45a049;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Botón flotante -->
   <button class="accessibility-toggle" onclick="toggleWidget()" aria-label="Abrir herramientas de accesibilidad">♿</button>
 
-  <!-- Widget de accesibilidad -->
   <div class="accessibility-widget" id="widget">
     <button onclick="aumentarFuente()">Aumentar texto 🔍</button>
     <button onclick="reducirFuente()">Reducir texto 🔽</button>
@@ -118,7 +137,6 @@
     <button onclick="activarLector()">Activar lector automático 🔊</button>
   </div>
 
-  <!-- Contenido principal -->
   <header class="navbar">
     <div class="logo">
       <a href="index.html" aria-label="Volver a Inicio">
@@ -137,17 +155,17 @@
   <main class="page-section section-inicio">
     <h2 class="highlight-on-hover">Bienvenido a DeporteX 🏠</h2>
     <img src="./img/images.png" 
-         alt="Imagen destacada en la página de inicio." 
-         class="hero-image">
+          alt="Imagen destacada en la página de inicio." 
+          class="hero-image">
     <p class="highlight-on-hover">Permite moverse fácilmente entre las secciones principales: Inicio 🏠, Productos 🛍️ y Contacto ✉️.</p>
     <p class="highlight-on-hover">Mejora la experiencia del usuario ✅ y organiza la información del sitio de manera clara 📄.</p>
   </main>
 
   <footer>
     <p class="highlight-on-hover">&copy; 2025 DeporteX</p>
+    <p id="ubicacion-usuario"></p> <!-- Ubicación del usuario visualmente destacada -->
   </footer>
 
-  <!-- Funcionalidad JS -->
   <script>
     let fuenteActual = 100;
     let inversionActiva = false;
@@ -231,6 +249,33 @@
         speechSynth.speak(finalUtterance);
       }
     }
+
+    // --- FUNCIÓN AÑADIDA PARA GEOLOCALIZACIÓN ---
+    function obtenerUbicacionIP() {
+      const url = 'https://ipapi.co/json/';
+      const ubicacionElemento = document.getElementById('ubicacion-usuario');
+      
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Error en la API de geolocalización');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.country_name && data.city) {
+            ubicacionElemento.textContent = `Viendo desde: ${data.city}, ${data.country_name} 🌍`;
+          } else {
+            ubicacionElemento.textContent = 'Ubicación no disponible.';
+          }
+        })
+        .catch(error => {
+          console.error('Error al obtener la ubicación:', error);
+          ubicacionElemento.textContent = 'Error al cargar la ubicación.';
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', obtenerUbicacionIP);
   </script>
 
 </body>
