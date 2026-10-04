@@ -1,0 +1,2110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f172a">
+  <title>Gestor Oposiciones & Rutina Pro</title>
+
+  <style>
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+
+    body{
+      font-family:Arial,Helvetica,sans-serif;
+      background:#f1f5f9;
+      color:#0f172a;
+      min-height:100vh;
+    }
+
+    header{
+      background:#0f172a;
+      color:white;
+      padding:20px;
+      text-align:center;
+      box-shadow:0 3px 10px rgba(0,0,0,.15);
+    }
+
+    header h1{
+      font-size:25px;
+      margin-bottom:8px;
+    }
+
+    header p{
+      font-size:14px;
+      opacity:.85;
+    }
+
+    main{
+      width:min(1100px,94%);
+      margin:20px auto 40px;
+    }
+
+    .card{
+      background:white;
+      border-radius:16px;
+      padding:20px;
+      margin-bottom:18px;
+      box-shadow:0 5px 18px rgba(15,23,42,.08);
+    }
+
+    .card h2{
+      font-size:20px;
+      margin-bottom:15px;
+    }
+
+    .calendar-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:15px;
+      flex-wrap:wrap;
+    }
+
+    .calendar-top button,
+    .btn{
+      border:none;
+      background:#0f172a;
+      color:white;
+      padding:10px 14px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:bold;
+    }
+
+    .calendar-top button:hover,
+    .btn:hover{
+      opacity:.9;
+    }
+
+    .month-title{
+      font-size:19px;
+      font-weight:bold;
+      text-align:center;
+      flex:1;
+    }
+
+    .calendar{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:6px;
+    }
+
+    .weekday{
+      text-align:center;
+      font-weight:bold;
+      font-size:12px;
+      padding:8px 2px;
+      color:#64748b;
+    }
+
+    .day{
+      min-height:82px;
+      border:1px solid #e2e8f0;
+      border-radius:10px;
+      padding:6px;
+      cursor:pointer;
+      position:relative;
+      background:#fff;
+      transition:.15s;
+    }
+
+    .day:hover{
+      background:#f8fafc;
+    }
+
+    .day.empty{
+      background:transparent;
+      border:none;
+      cursor:default;
+    }
+
+    .day.selected{
+      border:2px solid #2563eb;
+      background:#eff6ff;
+    }
+
+    .day.today{
+      box-shadow:inset 0 0 0 2px #16a34a;
+    }
+
+    .day-number{
+      font-weight:bold;
+      font-size:13px;
+    }
+
+    .holiday{
+      background:#fee2e2;
+      border-color:#fecaca;
+    }
+
+    .special{
+      background:#fef3c7;
+      border-color:#fde68a;
+    }
+
+    .event-name{
+      font-size:9px;
+      margin-top:5px;
+      line-height:1.15;
+      color:#991b1b;
+      font-weight:bold;
+    }
+
+    .special-name{
+      font-size:9px;
+      margin-top:5px;
+      line-height:1.15;
+      color:#92400e;
+      font-weight:bold;
+    }
+
+    .task-badge{
+      position:absolute;
+      right:5px;
+      bottom:5px;
+      background:#2563eb;
+      color:white;
+      border-radius:999px;
+      padding:2px 6px;
+      font-size:9px;
+      font-weight:bold;
+    }
+
+    .selected-date{
+      background:#eff6ff;
+      border-left:5px solid #2563eb;
+      padding:12px;
+      border-radius:10px;
+      margin-bottom:15px;
+      font-weight:bold;
+    }
+
+    .routine-item{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding:12px;
+      border-bottom:1px solid #e2e8f0;
+      align-items:center;
+    }
+
+    .routine-item:last-child{
+      border-bottom:none;
+    }
+
+    .routine-time{
+      font-weight:bold;
+      color:#2563eb;
+      min-width:115px;
+    }
+
+    .routine-name{
+      flex:1;
+    }
+
+    .task-row{
+      display:flex;
+      gap:10px;
+      margin-bottom:10px;
+      flex-wrap:wrap;
+    }
+
+    .task-row input[type="text"],
+    .task-row input[type="time"],
+    textarea{
+      border:1px solid #cbd5e1;
+      border-radius:10px;
+      padding:10px;
+      font-family:inherit;
+    }
+
+    .task-row input[type="text"]{
+      flex:1;
+      min-width:180px;
+    }
+
+    textarea{
+      width:100%;
+      min-height:180px;
+      resize:vertical;
+    }
+
+    .task{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 0;
+      border-bottom:1px solid #e2e8f0;
+    }
+
+    .task:last-child{
+      border-bottom:none;
+    }
+
+    .task.completed span{
+      text-decoration:line-through;
+      color:#94a3b8;
+    }
+
+    .task span{
+      flex:1;
+    }
+
+    .delete-btn{
+      border:none;
+      background:#fee2e2;
+      color:#b91c1c;
+      padding:7px 10px;
+      border-radius:8px;
+      cursor:pointer;
+    }
+
+    .timer-display{
+      font-size:58px;
+      text-align:center;
+      font-weight:bold;
+      letter-spacing:2px;
+      margin:15px 0;
+      color:#0f172a;
+    }
+
+    .timer-controls{
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .timer-buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      justify-content:center;
+      margin-bottom:15px;
+    }
+
+    .timer-buttons button{
+      border:1px solid #cbd5e1;
+      background:white;
+      padding:8px 12px;
+      border-radius:9px;
+      cursor:pointer;
+    }
+
+    .timer-buttons button.active{
+      background:#2563eb;
+      color:white;
+      border-color:#2563eb;
+    }
+
+    .notification-card{
+      border:2px solid #bfdbfe;
+      background:#eff6ff;
+    }
+
+    .notification-status{
+      margin-top:12px;
+      padding:10px;
+      border-radius:10px;
+      font-size:14px;
+      font-weight:bold;
+      background:white;
+      border:1px solid #dbeafe;
+    }
+
+    .notification-status.success{
+      color:#166534;
+      background:#dcfce7;
+      border-color:#bbf7d0;
+    }
+
+    .notification-status.error{
+      color:#991b1b;
+      background:#fee2e2;
+      border-color:#fecaca;
+    }
+
+    .notification-status.warning{
+      color:#92400e;
+      background:#fef3c7;
+      border-color:#fde68a;
+    }
+
+    .notification-buttons{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    .primary-btn{
+      background:#2563eb;
+      color:white;
+      border:none;
+      border-radius:10px;
+      padding:12px 16px;
+      cursor:pointer;
+      font-weight:bold;
+    }
+
+    .primary-btn:hover{
+      background:#1d4ed8;
+    }
+
+    .test-btn{
+      background:#16a34a;
+      color:white;
+      border:none;
+      border-radius:10px;
+      padding:12px 16px;
+      cursor:pointer;
+      font-weight:bold;
+    }
+
+    .test-btn:hover{
+      background:#15803d;
+    }
+
+    .danger-btn{
+      background:#dc2626;
+      color:white;
+      border:none;
+      border-radius:10px;
+      padding:12px 16px;
+      cursor:pointer;
+      font-weight:bold;
+    }
+
+    .small-info{
+      font-size:13px;
+      color:#64748b;
+      margin-top:10px;
+      line-height:1.5;
+    }
+
+    .legend{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      font-size:12px;
+      margin-top:12px;
+    }
+
+    .legend span{
+      display:flex;
+      align-items:center;
+      gap:5px;
+    }
+
+    .legend-box{
+      width:13px;
+      height:13px;
+      border-radius:4px;
+      display:inline-block;
+    }
+
+    .holiday-box{
+      background:#fee2e2;
+      border:1px solid #fecaca;
+    }
+
+    .special-box{
+      background:#fef3c7;
+      border:1px solid #fde68a;
+    }
+
+    .today-box{
+      background:white;
+      border:2px solid #16a34a;
+    }
+
+    @media(max-width:700px){
+      header h1{
+        font-size:21px;
+      }
+
+      main{
+        width:96%;
+      }
+
+      .card{
+        padding:15px;
+      }
+
+      .calendar{
+        gap:3px;
+      }
+
+      .day{
+        min-height:65px;
+        padding:4px;
+      }
+
+      .event-name,
+      .special-name{
+        font-size:7px;
+      }
+
+      .timer-display{
+        font-size:45px;
+      }
+
+      .routine-item{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .routine-time{
+        min-width:auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>📚 Gestor Oposiciones & Rutina Pro</h1>
+  <p>📍 Torrelavega, Cantabria · Calendario 2026 en adelante</p>
+</header>
+
+<main>
+    <div style="margin-top:18px;padding-top:18px;border-top:1px solid #bfdbfe;">
+
+  <h3 style="margin-bottom:12px;">
+    🧪 Programar notificación de prueba
+  </h3>
+
+  <div class="task-row">
+
+    <input
+      id="testNotificationDate"
+      type="date"
+    >
+
+    <input
+      id="testNotificationTime"
+      type="time"
+    >
+
+    <input
+      id="testNotificationText"
+      type="text"
+      placeholder="Texto de la notificación..."
+    >
+
+    <button
+      class="primary-btn"
+      onclick="scheduleTestNotification()"
+    >
+      📅 PROGRAMAR
+    </button>
+
+  </div>
+
+  <div
+    id="scheduledNotificationStatus"
+    class="notification-status warning"
+  >
+    No hay ninguna notificación de prueba programada.
+  </div>
+
+</div>
+
+  <!-- NOTIFICACIONES -->
+  <section class="card notification-card">
+    <h2>🔔 Avisos y notificaciones</h2>
+
+    <p>
+      Activa las notificaciones para recibir avisos de tu rutina y probar
+      inmediatamente que el navegador puede mostrar notificaciones.
+    </p>
+
+    <div class="notification-buttons">
+      <button
+        id="activateNotificationsBtn"
+        class="primary-btn"
+        onclick="activateNotifications()"
+      >
+        🔔 ACTIVAR AVISOS
+      </button>
+
+      <button
+        id="testNotificationBtn"
+        class="test-btn"
+        onclick="testNotification()"
+      >
+        🧪 PROBAR NOTIFICACIÓN
+      </button>
+    </div>
+
+    <div
+      id="notificationStatus"
+      class="notification-status warning"
+    >
+      ⏳ Comprobando permisos de notificación...
+    </div>
+
+    <div class="small-info">
+      <strong>Prueba:</strong> pulsa primero «ACTIVAR AVISOS» y después
+      «PROBAR NOTIFICACIÓN». Si el navegador lo permite, debería aparecer
+      una notificación en tu ordenador.
+    </div>
+  </section>
+
+
+  <!-- CALENDARIO -->
+  <section class="card">
+    <h2>📅 Calendario</h2>
+
+    <div class="calendar-top">
+      <button onclick="previousMonth()">◀</button>
+
+      <div id="monthTitle" class="month-title"></div>
+
+      <button onclick="nextMonth()">▶</button>
+
+      <button onclick="goToday()">Hoy</button>
+    </div>
+
+    <div class="calendar">
+
+      <div class="weekday">L</div>
+      <div class="weekday">M</div>
+      <div class="weekday">X</div>
+      <div class="weekday">J</div>
+      <div class="weekday">V</div>
+      <div class="weekday">S</div>
+      <div class="weekday">D</div>
+
+      <div id="calendarDays" style="display:contents;"></div>
+
+    </div>
+
+    <div class="legend">
+      <span>
+        <span class="legend-box holiday-box"></span>
+        Festivo
+      </span>
+
+      <span>
+        <span class="legend-box special-box"></span>
+        Fecha especial
+      </span>
+
+      <span>
+        <span class="legend-box today-box"></span>
+        Hoy
+      </span>
+    </div>
+  </section>
+
+
+  <!-- RUTINA -->
+  <section class="card">
+    <h2>⏰ Rutina del día</h2>
+
+    <div id="selectedDate" class="selected-date"></div>
+
+    <div id="routineList"></div>
+  </section>
+
+
+  <!-- TAREAS -->
+  <section class="card">
+    <h2>✅ Tareas del día</h2>
+
+    <div class="task-row">
+      <input
+        id="taskText"
+        type="text"
+        placeholder="Nueva tarea..."
+      >
+
+      <input
+        id="taskTime"
+        type="time"
+      >
+
+      <button class="btn" onclick="addTask()">
+        Añadir
+      </button>
+    </div>
+
+    <div id="taskList"></div>
+  </section>
+
+
+  <!-- NOTAS -->
+  <section class="card">
+    <h2>📝 Notas del día</h2>
+
+    <textarea
+      id="notes"
+      placeholder="Escribe aquí tus notas..."
+      oninput="saveNotes()"
+    ></textarea>
+  </section>
+
+
+  <!-- TEMPORIZADOR -->
+  <section class="card">
+    <h2>⏱️ Temporizador de estudio</h2>
+
+    <div class="timer-buttons" id="activityButtons">
+      <button onclick="selectActivity('📚 Estudiar', this)">
+        📚 Estudiar
+      </button>
+
+      <button onclick="selectActivity('📝 Hacer test', this)">
+        📝 Hacer test
+      </button>
+
+      <button onclick="selectActivity('📖 Repasar', this)">
+        📖 Repasar
+      </button>
+
+      <button onclick="selectActivity('🧠 Memorizar', this)">
+        🧠 Memorizar
+      </button>
+
+      <button onclick="selectActivity('🏋️ Gimnasio', this)">
+        🏋️ Gimnasio
+      </button>
+
+      <button onclick="selectActivity('✏️ Otra tarea', this)">
+        ✏️ Otra tarea
+      </button>
+    </div>
+
+    <div class="timer-buttons" id="durationButtons">
+      <button onclick="setDuration(15,this)">15 min</button>
+      <button onclick="setDuration(20,this)">20 min</button>
+      <button onclick="setDuration(25,this)">25 min</button>
+      <button onclick="setDuration(30,this)">30 min</button>
+      <button onclick="setDuration(45,this)">45 min</button>
+      <button onclick="setDuration(60,this)">60 min</button>
+      <button onclick="setDuration(75,this)">75 min</button>
+      <button onclick="setDuration(90,this)">90 min</button>
+      <button onclick="setDuration(120,this)">120 min</button>
+    </div>
+
+    <div id="timerDisplay" class="timer-display">
+      15:00
+    </div>
+
+    <div class="timer-controls">
+      <button class="primary-btn" onclick="startTimer()">
+        ▶️ Iniciar
+      </button>
+
+      <button class="btn" onclick="pauseTimer()">
+        ⏸️ Pausar
+      </button>
+
+      <button class="danger-btn" onclick="resetTimer()">
+        🔄 Reiniciar
+      </button>
+    </div>
+
+    <div class="small-info" id="timerActivity">
+      Actividad: 📚 Estudiar
+    </div>
+  </section>
+
+</main>
+
+
+<script>
+
+  /* =========================================================
+     DATOS
+  ========================================================= */
+
+  const holidays = {
+    "2026-01-01":"Año Nuevo",
+    "2026-01-06":"Epifanía del Señor",
+    "2026-04-02":"Jueves Santo",
+    "2026-04-03":"Viernes Santo",
+    "2026-05-01":"Fiesta del Trabajo",
+    "2026-07-28":"Día de las Instituciones de Cantabria",
+    "2026-08-15":"Asunción de la Virgen",
+    "2026-08-17":"San Roque",
+    "2026-09-15":"La Bien Aparecida",
+    "2026-09-16":"San Cipriano",
+    "2026-10-12":"Fiesta Nacional de España",
+    "2026-12-07":"Día de la Constitución Española",
+    "2026-12-08":"Inmaculada Concepción",
+    "2026-12-25":"Natividad del Señor"
+  };
+
+
+  const specialDates = {
+    "2026-02-14":"San Valentín",
+    "2026-03-08":"Día Internacional de la Mujer",
+    "2026-03-19":"Día del Padre",
+    "2026-04-23":"Día del Libro",
+    "2026-05-03":"Día de la Madre",
+    "2026-06-21":"Inicio del verano",
+    "2026-10-31":"Halloween",
+    "2026-12-24":"Nochebuena",
+    "2026-12-31":"Nochevieja"
+  };
+
+
+  let currentDate = new Date();
+
+  let selectedDate = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    currentDate.getDate()
+  );
+
+
+  let currentMonth = currentDate.getMonth();
+  let currentYear = currentDate.getFullYear();
+
+
+  let timerSeconds = 15 * 60;
+  let timerInterval = null;
+  let timerRunning = false;
+
+  let selectedActivity = "📚 Estudiar";
+
+
+  /* =========================================================
+     UTILIDADES
+  ========================================================= */
+
+  function pad(number){
+    return String(number).padStart(2,"0");
+  }
+
+
+  function dateKey(date){
+    return (
+      date.getFullYear() +
+      "-" +
+      pad(date.getMonth()+1) +
+      "-" +
+      pad(date.getDate())
+    );
+  }
+
+
+  function formatDateSpanish(date){
+    return date.toLocaleDateString("es-ES",{
+      weekday:"long",
+      day:"numeric",
+      month:"long",
+      year:"numeric"
+    });
+  }
+
+
+  /* =========================================================
+     CALENDARIO
+  ========================================================= */
+
+  function renderCalendar(){
+
+    const container = document.getElementById("calendarDays");
+
+    container.innerHTML = "";
+
+    const monthName = new Date(
+      currentYear,
+      currentMonth,
+      1
+    ).toLocaleDateString("es-ES",{
+      month:"long",
+      year:"numeric"
+    });
+
+    document.getElementById("monthTitle").textContent =
+      monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
+
+    const firstDay = new Date(
+      currentYear,
+      currentMonth,
+      1
+    );
+
+    let startingDay = firstDay.getDay();
+
+    startingDay = startingDay === 0 ? 6 : startingDay - 1;
+
+
+    const daysInMonth = new Date(
+      currentYear,
+      currentMonth + 1,
+      0
+    ).getDate();
+
+
+    for(let i=0;i<startingDay;i++){
+
+      const empty = document.createElement("div");
+
+      empty.className = "day empty";
+
+      container.appendChild(empty);
+    }
+
+
+    for(let day=1;day<=daysInMonth;day++){
+
+      const cell = document.createElement("div");
+
+      cell.className = "day";
+
+
+      const date = new Date(
+        currentYear,
+        currentMonth,
+        day
+      );
+
+      const key = dateKey(date);
+
+
+      const number = document.createElement("div");
+
+      number.className = "day-number";
+
+      number.textContent = day;
+
+      cell.appendChild(number);
+
+
+      if(
+        date.getFullYear() === selectedDate.getFullYear() &&
+        date.getMonth() === selectedDate.getMonth() &&
+        date.getDate() === selectedDate.getDate()
+      ){
+        cell.classList.add("selected");
+      }
+
+
+      const today = new Date();
+
+      if(
+        date.getFullYear() === today.getFullYear() &&
+        date.getMonth() === today.getMonth() &&
+        date.getDate() === today.getDate()
+      ){
+        cell.classList.add("today");
+      }
+
+
+      if(holidays[key]){
+
+        cell.classList.add("holiday");
+
+        const label = document.createElement("div");
+
+        label.className = "event-name";
+
+        label.textContent = holidays[key];
+
+        cell.appendChild(label);
+      }
+
+
+      if(specialDates[key]){
+
+        cell.classList.add("special");
+
+        const label = document.createElement("div");
+
+        label.className = "special-name";
+
+        label.textContent = specialDates[key];
+
+        cell.appendChild(label);
+      }
+
+
+      const tasks = getTasks(key);
+
+      if(tasks.length > 0){
+
+        const badge = document.createElement("div");
+
+        badge.className = "task-badge";
+
+        badge.textContent = tasks.length + " tarea" +
+          (tasks.length !== 1 ? "s" : "");
+
+        cell.appendChild(badge);
+      }
+
+
+      cell.onclick = function(){
+
+        selectedDate = new Date(
+          currentYear,
+          currentMonth,
+          day
+        );
+
+        renderCalendar();
+
+        renderSelectedDay();
+      };
+
+
+      container.appendChild(cell);
+    }
+  }
+
+
+  function previousMonth(){
+
+    currentMonth--;
+
+    if(currentMonth < 0){
+
+      currentMonth = 11;
+      currentYear--;
+    }
+
+    renderCalendar();
+  }
+
+
+  function nextMonth(){
+
+    currentMonth++;
+
+    if(currentMonth > 11){
+
+      currentMonth = 0;
+      currentYear++;
+    }
+
+    renderCalendar();
+  }
+
+
+  function goToday(){
+
+    const today = new Date();
+
+    selectedDate = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+
+    currentMonth = today.getMonth();
+    currentYear = today.getFullYear();
+
+    renderCalendar();
+    renderSelectedDay();
+  }
+
+
+  /* =========================================================
+     RUTINA
+  ========================================================= */
+
+  function getRoutine(date){
+
+    const day = date.getDay();
+
+    // Lunes a viernes
+    if(day >= 1 && day <= 5){
+
+      return [
+
+        {
+          time:"07:15",
+          name:"Levantarse"
+        },
+
+        {
+          time:"15:15 – 17:15",
+          name:"Estudio"
+        },
+
+        {
+          time:"17:15 – 17:36",
+          name:"Casa → gimnasio"
+        },
+
+        {
+          time:"17:36 – 18:41",
+          name:"Gimnasio"
+        },
+
+        {
+          time:"18:41 – 19:02",
+          name:"Gimnasio → casa"
+        }
+
+      ];
+    }
+
+
+    // Fin de semana
+    return [
+
+      {
+        time:"09:39 – 10:00",
+        name:"Casa → gimnasio"
+      },
+
+      {
+        time:"10:00 – 12:00",
+        name:"Gimnasio"
+      },
+
+      {
+        time:"12:00 – 12:21",
+        name:"Gimnasio → casa"
+      },
+
+      {
+        time:"12:21 →",
+        name:"Haz lo que te dé la gana"
+      }
+
+    ];
+  }
+
+
+  function renderSelectedDay(){
+
+    const dateText =
+      formatDateSpanish(selectedDate);
+
+    document.getElementById("selectedDate").textContent =
+      "📅 " +
+      dateText.charAt(0).toUpperCase() +
+      dateText.slice(1);
+
+
+    const routine = getRoutine(selectedDate);
+
+    const container =
+      document.getElementById("routineList");
+
+    container.innerHTML = "";
+
+
+    routine.forEach(item => {
+
+      const row = document.createElement("div");
+
+      row.className = "routine-item";
+
+
+      const time = document.createElement("div");
+
+      time.className = "routine-time";
+
+      time.textContent = item.time;
+
+
+      const name = document.createElement("div");
+
+      name.className = "routine-name";
+
+      name.textContent = item.name;
+
+
+      row.appendChild(time);
+      row.appendChild(name);
+
+      container.appendChild(row);
+    });
+
+
+    renderTasks();
+
+    loadNotes();
+  }
+
+
+  /* =========================================================
+     TAREAS
+  ========================================================= */
+
+  function getTasks(key){
+
+    try{
+
+      return JSON.parse(
+        localStorage.getItem("tasks-" + key)
+      ) || [];
+
+    }catch(error){
+
+      return [];
+    }
+  }
+
+
+  function saveTasks(key,tasks){
+
+    localStorage.setItem(
+      "tasks-" + key,
+      JSON.stringify(tasks)
+    );
+  }
+
+
+  function addTask(){
+
+    const textInput =
+      document.getElementById("taskText");
+
+    const timeInput =
+      document.getElementById("taskTime");
+
+
+    const text =
+      textInput.value.trim();
+
+
+    if(!text){
+
+      alert("Escribe una tarea.");
+
+      return;
+    }
+
+
+    const key = dateKey(selectedDate);
+
+    const tasks = getTasks(key);
+
+
+    tasks.push({
+
+      id:Date.now(),
+
+      text:text,
+
+      time:timeInput.value || "",
+
+      completed:false
+
+    });
+
+
+    saveTasks(key,tasks);
+
+
+    textInput.value = "";
+
+    timeInput.value = "";
+
+
+    renderTasks();
+
+    renderCalendar();
+  }
+
+
+  function renderTasks(){
+
+    const key = dateKey(selectedDate);
+
+    const tasks = getTasks(key);
+
+
+    const container =
+      document.getElementById("taskList");
+
+    container.innerHTML = "";
+
+
+    if(tasks.length === 0){
+
+      container.innerHTML =
+        '<div class="small-info">No hay tareas para este día.</div>';
+
+      return;
+    }
+
+
+    tasks.forEach(task => {
+
+      const row = document.createElement("div");
+
+      row.className = "task";
+
+
+      if(task.completed){
+
+        row.classList.add("completed");
+      }
+
+
+      const checkbox =
+        document.createElement("input");
+
+      checkbox.type = "checkbox";
+
+      checkbox.checked = task.completed;
+
+
+      checkbox.onchange = function(){
+
+        task.completed = checkbox.checked;
+
+        saveTasks(key,tasks);
+
+        renderTasks();
+      };
+
+
+      const span =
+        document.createElement("span");
+
+
+      span.textContent =
+        (task.time ? task.time + " · " : "") +
+        task.text;
+
+
+      const deleteButton =
+        document.createElement("button");
+
+      deleteButton.className = "delete-btn";
+
+      deleteButton.textContent = "🗑️";
+
+
+      deleteButton.onclick = function(){
+
+        const updated =
+          tasks.filter(item => item.id !== task.id);
+
+        saveTasks(key,updated);
+
+        renderTasks();
+
+        renderCalendar();
+      };
+
+
+      row.appendChild(checkbox);
+
+      row.appendChild(span);
+
+      row.appendChild(deleteButton);
+
+
+      container.appendChild(row);
+    });
+  }
+
+
+  /* =========================================================
+     NOTAS
+  ========================================================= */
+
+  function saveNotes(){
+
+    const key = dateKey(selectedDate);
+
+    const value =
+      document.getElementById("notes").value;
+
+
+    localStorage.setItem(
+      "notes-" + key,
+      value
+    );
+  }
+
+
+  function loadNotes(){
+
+    const key = dateKey(selectedDate);
+
+    document.getElementById("notes").value =
+      localStorage.getItem("notes-" + key) || "";
+  }
+
+
+  /* =========================================================
+     NOTIFICACIONES
+  ========================================================= */
+
+  function setNotificationStatus(
+    message,
+    type = "warning"
+  ){
+
+    const status =
+      document.getElementById("notificationStatus");
+
+    status.textContent = message;
+
+    status.className =
+      "notification-status " + type;
+  }
+
+
+  function updateNotificationStatus(){
+
+    if(!("Notification" in window)){
+
+      setNotificationStatus(
+        "❌ Este navegador no permite notificaciones.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    if(Notification.permission === "granted"){
+
+      setNotificationStatus(
+        "🟢 Notificaciones activadas. Ya puedes probarlas.",
+        "success"
+      );
+
+      return;
+    }
+
+
+    if(Notification.permission === "denied"){
+
+      setNotificationStatus(
+        "❌ Notificaciones bloqueadas. Actívalas desde los ajustes del navegador.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    setNotificationStatus(
+      "🟡 Las notificaciones todavía no están activadas.",
+      "warning"
+    );
+  }
+
+
+  async function activateNotifications(){
+
+    if(!("Notification" in window)){
+
+      setNotificationStatus(
+        "❌ Tu navegador no permite notificaciones.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    if(Notification.permission === "denied"){
+
+      setNotificationStatus(
+        "❌ El navegador las tiene bloqueadas. Debes permitir las notificaciones desde los ajustes del sitio.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    if(Notification.permission === "granted"){
+
+      setNotificationStatus(
+        "🟢 Notificaciones ya activadas. Pulsa «PROBAR NOTIFICACIÓN».",
+        "success"
+      );
+
+      return;
+    }
+
+
+    try{
+
+      const permission =
+        await Notification.requestPermission();
+
+
+      if(permission === "granted"){
+
+        setNotificationStatus(
+          "🟢 ¡Notificaciones activadas correctamente!",
+          "success"
+        );
+
+        // Lanzamos una notificación de confirmación
+        sendNotification(
+          "🔔 Avisos activados",
+          "Perfecto. El Gestor Oposiciones ya puede mostrar notificaciones."
+        );
+
+      }else if(permission === "denied"){
+
+        setNotificationStatus(
+          "❌ Notificaciones bloqueadas. Actívalas desde los ajustes del navegador.",
+          "error"
+        );
+
+      }else{
+
+        setNotificationStatus(
+          "🟡 No se ha concedido todavía el permiso.",
+          "warning"
+        );
+      }
+
+    }catch(error){
+
+      console.error(error);
+
+      setNotificationStatus(
+        "❌ No se pudo solicitar el permiso de notificaciones.",
+        "error"
+      );
+    }
+  }
+
+
+  function sendNotification(title,body){
+
+    if(!("Notification" in window)){
+
+      alert(
+        "Este navegador no permite notificaciones."
+      );
+
+      return false;
+    }
+
+
+    if(Notification.permission !== "granted"){
+
+      setNotificationStatus(
+        "❌ Primero debes pulsar «ACTIVAR AVISOS».",
+        "error"
+      );
+
+      return false;
+    }
+
+
+    try{
+
+      const notification =
+        new Notification(title,{
+
+          body:body,
+
+          icon:"icon-192.png",
+
+          tag:"gestor-oposiciones-" + Date.now(),
+
+          requireInteraction:false
+
+        });
+
+
+      notification.onclick = function(){
+
+        window.focus();
+
+        notification.close();
+      };
+
+
+      return true;
+
+    }catch(error){
+
+      console.error(
+        "Error creando notificación:",
+        error
+      );
+
+      setNotificationStatus(
+        "❌ El navegador no ha podido crear la notificación.",
+        "error"
+      );
+
+      return false;
+    }
+  }
+
+
+  function testNotification(){
+
+    if(!("Notification" in window)){
+
+      setNotificationStatus(
+        "❌ Este navegador no soporta notificaciones.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    if(Notification.permission !== "granted"){
+
+      setNotificationStatus(
+        "🟡 Primero pulsa «ACTIVAR AVISOS».",
+        "warning"
+      );
+
+      return;
+    }
+
+
+    const success = sendNotification(
+      "🧪 Notificación de prueba",
+      "¡Funciona! Esta es una notificación de prueba del Gestor Oposiciones."
+    );
+
+
+    if(success){
+
+      setNotificationStatus(
+        "🟢 Notificación enviada. Mira la zona de notificaciones de tu ordenador.",
+        "success"
+      );
+    }
+  }
+
+
+  /* =========================================================
+     AVISOS PROGRAMADOS LOCALES
+  ========================================================= */
+
+  function checkLocalNotifications(){
+
+    const current = new Date();
+
+    const day = current.getDay();
+
+    const hour = current.getHours();
+
+    const minute = current.getMinutes();
+
+
+    // Lunes a viernes — 07:15
+    if(
+      day >= 1 &&
+      day <= 5 &&
+      hour === 7 &&
+      minute === 15
+    ){
+
+      sendNotification(
+        "⏰ Levantarse",
+        "Buenos días. Es hora de levantarse."
+      );
+    }
+
+
+    // Copa del Rey — 5 octubre 2026
+    if(
+      current.getFullYear() === 2026 &&
+      current.getMonth() === 9 &&
+      current.getDate() === 5 &&
+      hour === 12 &&
+      minute === 50
+    ){
+
+      sendNotification(
+        "🏆 Copa del Rey",
+        "Son las 12:50. La Copa del Rey empieza a las 13:00."
+      );
+    }
+  }
+
+
+  /* =========================================================
+     TEMPORIZADOR
+  ========================================================= */
+
+  function updateTimerDisplay(){
+
+    const minutes =
+      Math.floor(timerSeconds / 60);
+
+    const seconds =
+      timerSeconds % 60;
+
+
+    document.getElementById("timerDisplay")
+      .textContent =
+        pad(minutes) + ":" + pad(seconds);
+  }
+
+
+  function selectActivity(activity,button){
+
+    selectedActivity = activity;
+
+
+    document
+      .querySelectorAll("#activityButtons button")
+      .forEach(btn => btn.classList.remove("active"));
+
+
+    button.classList.add("active");
+
+
+    document.getElementById("timerActivity")
+      .textContent =
+      "Actividad: " + selectedActivity;
+  }
+
+
+  function setDuration(minutes,button){
+
+    pauseTimer();
+
+
+    timerSeconds = minutes * 60;
+
+    updateTimerDisplay();
+
+
+    document
+      .querySelectorAll("#durationButtons button")
+      .forEach(btn => btn.classList.remove("active"));
+
+
+    button.classList.add("active");
+  }
+
+
+  function setTimerFromSelection(){
+
+    const firstDuration =
+      document.querySelector(
+        "#durationButtons button"
+      );
+
+
+    if(firstDuration){
+
+      firstDuration.classList.add("active");
+    }
+
+
+    const firstActivity =
+      document.querySelector(
+        "#activityButtons button"
+      );
+
+
+    if(firstActivity){
+
+      firstActivity.classList.add("active");
+    }
+  }
+
+
+  function startTimer(){
+
+    if(timerRunning){
+
+      return;
+    }
+
+
+    timerRunning = true;
+
+
+    timerInterval = setInterval(() => {
+
+      if(timerSeconds <= 0){
+
+        clearInterval(timerInterval);
+
+        timerRunning = false;
+
+        sendNotification(
+          "⏰ Temporizador terminado",
+          "Has terminado: " + selectedActivity
+        );
+
+        return;
+      }
+
+
+      timerSeconds--;
+
+      updateTimerDisplay();
+
+    },1000);
+  }
+
+
+  function pauseTimer(){
+
+    if(timerInterval){
+
+      clearInterval(timerInterval);
+
+      timerInterval = null;
+    }
+
+
+    timerRunning = false;
+  }
+
+
+  function resetTimer(){
+
+    pauseTimer();
+
+    timerSeconds = 15 * 60;
+
+    updateTimerDisplay();
+
+
+    document
+      .querySelectorAll("#durationButtons button")
+      .forEach(btn => btn.classList.remove("active"));
+
+
+    const firstDuration =
+      document.querySelector(
+        "#durationButtons button"
+      );
+
+
+    if(firstDuration){
+
+      firstDuration.classList.add("active");
+    }
+  }
+
+
+  /* =========================================================
+     SERVICE WORKER
+  ========================================================= */
+
+  if("serviceWorker" in navigator){
+
+    window.addEventListener("load",() => {
+
+      navigator.serviceWorker.register("./sw.js")
+
+        .then(() => {
+
+          console.log(
+            "Service Worker registrado correctamente."
+          );
+
+        })
+
+        .catch(error => {
+
+          console.log(
+            "Service Worker no disponible:",
+            error
+          );
+
+        });
+    });
+  }
+
+
+  /* =========================================================
+     INICIO
+  ========================================================= */
+
+  renderCalendar();
+
+  renderSelectedDay();
+
+  setTimerFromSelection();
+
+  updateTimerDisplay();
+
+  updateNotificationStatus();
+
+
+  // Comprobación de avisos cada 20 segundos
+  setInterval(
+    checkLocalNotifications,
+    20000
+  );
+/* =========================================================
+   NOTIFICACIÓN PERSONALIZADA DE PRUEBA
+========================================================= */
+
+let scheduledTestNotification = null;
+
+
+/*
+  Programar una notificación
+*/
+function scheduleTestNotification(){
+
+  if(!("Notification" in window)){
+
+    setScheduledStatus(
+      "❌ Este navegador no permite notificaciones.",
+      "error"
+    );
+
+    return;
+  }
+
+
+  if(Notification.permission !== "granted"){
+
+    setScheduledStatus(
+      "❌ Primero pulsa «ACTIVAR AVISOS».",
+      "error"
+    );
+
+    return;
+  }
+
+
+  const date =
+    document.getElementById(
+      "testNotificationDate"
+    ).value;
+
+
+  const time =
+    document.getElementById(
+      "testNotificationTime"
+    ).value;
+
+
+  const text =
+    document.getElementById(
+      "testNotificationText"
+    ).value.trim();
+
+
+  if(!date){
+
+    setScheduledStatus(
+      "⚠️ Elige una fecha.",
+      "warning"
+    );
+
+    return;
+  }
+
+
+  if(!time){
+
+    setScheduledStatus(
+      "⚠️ Elige una hora.",
+      "warning"
+    );
+
+    return;
+  }
+
+
+  if(!text){
+
+    setScheduledStatus(
+      "⚠️ Escribe el texto de la notificación.",
+      "warning"
+    );
+
+    return;
+  }
+
+
+  const target =
+    new Date(date + "T" + time);
+
+
+  if(isNaN(target.getTime())){
+
+    setScheduledStatus(
+      "❌ La fecha u hora no son válidas.",
+      "error"
+    );
+
+    return;
+  }
+
+
+  if(target.getTime() <= Date.now()){
+
+    setScheduledStatus(
+      "⚠️ La fecha y hora deben ser futuras.",
+      "warning"
+    );
+
+    return;
+  }
+
+
+  scheduledTestNotification = {
+
+    date:date,
+
+    time:time,
+
+    text:text,
+
+    timestamp:target.getTime()
+
+  };
+
+
+  localStorage.setItem(
+    "scheduledTestNotification",
+    JSON.stringify(
+      scheduledTestNotification
+    )
+  );
+
+
+  setScheduledStatus(
+    "🟢 Programada para " +
+    target.toLocaleString("es-ES") +
+    " — «" +
+    text +
+    "»",
+    "success"
+  );
+}
+
+
+/*
+  Mostrar estado
+*/
+function setScheduledStatus(
+  message,
+  type = "warning"
+){
+
+  const element =
+    document.getElementById(
+      "scheduledNotificationStatus"
+    );
+
+
+  element.textContent = message;
+
+
+  element.className =
+    "notification-status " + type;
+}
+
+
+/*
+  Comprobar si ha llegado la hora
+*/
+function checkScheduledTestNotification(){
+
+  if(!scheduledTestNotification){
+
+    return;
+  }
+
+
+  if(Date.now() >= scheduledTestNotification.timestamp){
+
+    sendNotification(
+      "🧪 Notificación programada",
+      scheduledTestNotification.text
+    );
+
+
+    scheduledTestNotification = null;
+
+
+    localStorage.removeItem(
+      "scheduledTestNotification"
+    );
+
+
+    setScheduledStatus(
+      "🟢 ¡Notificación enviada!",
+      "success"
+    );
+  }
+}
+
+
+/*
+  Recuperar una programación guardada
+  si recargas la página
+*/
+function loadScheduledTestNotification(){
+
+  try{
+
+    const saved =
+      localStorage.getItem(
+        "scheduledTestNotification"
+      );
+
+
+    if(!saved){
+
+      return;
+    }
+
+
+    scheduledTestNotification =
+      JSON.parse(saved);
+
+
+    if(
+      scheduledTestNotification &&
+      scheduledTestNotification.timestamp > Date.now()
+    ){
+
+      const target =
+        new Date(
+          scheduledTestNotification.timestamp
+        );
+
+
+      setScheduledStatus(
+        "🟢 Programada para " +
+        target.toLocaleString("es-ES") +
+        " — «" +
+        scheduledTestNotification.text +
+        "»",
+        "success"
+      );
+
+    }else{
+
+      scheduledTestNotification = null;
+
+      localStorage.removeItem(
+        "scheduledTestNotification"
+      );
+    }
+
+  }catch(error){
+
+    console.error(error);
+
+    scheduledTestNotification = null;
+  }
+}
+
+</script>
+
+</body>
+</html>
